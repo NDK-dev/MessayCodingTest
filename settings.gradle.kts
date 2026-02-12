@@ -1,3 +1,5 @@
+import java.util.Properties
+
 rootProject.name = "MessayCodingTest"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -15,7 +17,15 @@ pluginManagement {
     }
 }
 
+val localProperties = Properties().apply {
+    val f = file("local.properties")
+    if (f.exists()) {
+        load(f.inputStream())
+    }
+}
+
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google {
             mavenContent {
@@ -25,6 +35,14 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven {
+            url = uri(extra["maven.messay"].toString())
+
+            credentials {
+                username = localProperties.getProperty("maven.messay.username")
+                password = localProperties.getProperty("maven.messay.password")
+            }
+        }
     }
 }
 
