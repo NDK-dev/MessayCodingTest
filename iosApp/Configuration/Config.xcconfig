@@ -1,0 +1,7 @@
+TEAM_ID=
+
+PRODUCT_NAME=MessayCodingTest
+PRODUCT_BUNDLE_IDENTIFIER=jp.co.ndk_group.messay_coding_test.MessayCodingTest$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
