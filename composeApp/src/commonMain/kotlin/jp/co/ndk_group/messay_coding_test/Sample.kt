@@ -47,11 +47,9 @@ fun Sample() {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
-        // BoxWithConstraintsScopeから利用可能な最大幅・高さを取得する。
         val screenWidth = maxWidth
         val screenHeight = maxHeight
 
-        // 画面サイズが変更された場合に初期値を再計算するため、keyにサイズを指定する。
         var pointerPositionX by remember(screenWidth) {
             mutableStateOf(screenWidth / 2)
         }
@@ -174,12 +172,6 @@ private fun Pointer(
     )
 }
 
-data class History(
-    val currentCount: Int? = null,
-    val lastCount: Int? = null,
-    val history: List<Int> = emptyList(),
-)
-
 @Composable
 fun HistoryView(
     name: String,
@@ -201,3 +193,9 @@ fun HistoryView(
 
     }
 }
+
+data class History(
+    val currentCount: Int? = null,
+    val lastCount: Int? = null,
+    val history: List<Int> = emptyList(),
+)
