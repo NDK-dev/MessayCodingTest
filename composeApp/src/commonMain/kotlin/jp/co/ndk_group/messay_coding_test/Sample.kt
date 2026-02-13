@@ -35,53 +35,12 @@ import jp.co.ndk_group.mdk.entity.MdkSide
 private val eyeCloseHold = MdkTarget.EyeCloseHold(MdkSide.Unspecified)
 private val faceMovement = MdkTarget.FaceMovement
 
-private val optionsBuilder = MdkOptions.Builder()
-    .setEnabledMdkTargets(
-        setOf(
-            eyeCloseHold,
-            faceMovement,
-        )
-    )
-    .setActionParams(
-        eyeCloseHold,
-        MdkOptions.HorizontalPairedHoldActionParams(
-            thresholdRatio = { side ->
-                when (side) {
-                    MdkSide.Left -> 0.6f
-                    MdkSide.Right -> 0.6f
-                }
-            },
-            requiredMillis = { count -> if (count == 1) 500 else 1_000 },
-        ),
-    )
-    .setActionParams(
-        faceMovement,
-        MdkOptions.MovementActionParams(
-            blinkThresholdRatio = { side ->
-                when (side) {
-                    MdkSide.Left -> 0.6f
-                    MdkSide.Right -> 0.6f
-                }
-            },
-            sensitivityFactor = {
-                when (it) {
-                    MdkSide.Axis.Horizontal -> 1f
-                    MdkSide.Axis.Vertical -> 1f
-                }
-            },
-        )
-    )
-
 @Composable
 fun Sample() {
 
     val hapticFeedback = LocalHapticFeedback.current
 
     var holdHistory by remember {
-        mutableStateOf(History())
-    }
-
-    var repeatHistory by remember {
         mutableStateOf(History())
     }
 
@@ -104,7 +63,42 @@ fun Sample() {
         Box {
             Column {
                 MdkView(
-                    optionsBuilder
+                    MdkOptions.Builder()
+                        .setEnabledMdkTargets(
+                            setOf(
+                                eyeCloseHold,
+                                faceMovement,
+                            )
+                        )
+                        .setActionParams(
+                            eyeCloseHold,
+                            MdkOptions.HorizontalPairedHoldActionParams(
+                                thresholdRatio = { side ->
+                                    when (side) {
+                                        MdkSide.Left -> 0.6f
+                                        MdkSide.Right -> 0.6f
+                                    }
+                                },
+                                requiredMillis = { count -> if (count == 1) 500 else 1_000 },
+                            ),
+                        )
+                        .setActionParams(
+                            faceMovement,
+                            MdkOptions.MovementActionParams(
+                                blinkThresholdRatio = { side ->
+                                    when (side) {
+                                        MdkSide.Left -> 0.6f
+                                        MdkSide.Right -> 0.6f
+                                    }
+                                },
+                                sensitivityFactor = {
+                                    when (it) {
+                                        MdkSide.Axis.Horizontal -> 1f
+                                        MdkSide.Axis.Vertical -> 1f
+                                    }
+                                },
+                            )
+                        )
                         .setListener {
                             when (val hold = eyeCloseHold.currentState()) {
                                 is MdkResult.ScalarActionState.CountUp -> {
@@ -139,7 +133,7 @@ fun Sample() {
                             pointerPositionX =
                                 screenWidth * normalizedMovementState.x
                             pointerPositionY =
-                                screenWidth * normalizedMovementState.y
+                                screenHeight * normalizedMovementState.y
                         }
                         .build(),
                     Modifier.weight(1f),
@@ -152,10 +146,7 @@ fun Sample() {
                         .padding(10.dp)
                         .weight(1f)
                 ) {
-
                     HistoryView("hold", holdHistory)
-                    HistoryView("repeat", repeatHistory)
-
                 }
             }
 
@@ -163,8 +154,8 @@ fun Sample() {
                 pointerPositionX = { pointerPositionX },
                 pointerPositionY = { pointerPositionY },
             )
-
         }
+
     }
 }
 
